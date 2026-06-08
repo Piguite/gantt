@@ -840,13 +840,23 @@ export default class Gantt {
 
     make_dates() {
         this.get_dates_to_draw().forEach((date, i) => {
+            const labels_on_ticks =
+                this.options.labels_on_ticks ||
+                this.config.view_mode.labels_on_ticks;
+
+            const tick_class = labels_on_ticks ? ' label-on-tick' : '';
+
             if (date.lower_text) {
                 let $lower_text = this.create_el({
                     left: date.x,
                     top: date.lower_y,
-                    classes: 'lower-text date_' + sanitize(date.formatted_date),
+                    classes:
+                        'lower-text date_' +
+                        sanitize(date.formatted_date) +
+                        tick_class,
                     append_to: this.$lower_header,
                 });
+
                 $lower_text.innerText = date.lower_text;
             }
 
@@ -854,15 +864,18 @@ export default class Gantt {
                 let $upper_text = this.create_el({
                     left: date.x,
                     top: date.upper_y,
-                    classes: 'upper-text',
+                    classes: 'upper-text' + tick_class,
                     append_to: this.$upper_header,
                 });
+
                 $upper_text.innerText = date.upper_text;
             }
         });
+
         this.upperTexts = Array.from(
             this.$container.querySelectorAll('.upper-text'),
         );
+
         this.lowerTexts = Array.from(
             this.$container.querySelectorAll('.lower-text'),
         );
